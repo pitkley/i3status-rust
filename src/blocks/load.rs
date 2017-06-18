@@ -108,11 +108,14 @@ impl Block for Load {
             "load",
             "failed to parse float percentage",
         )? / self.logical_cores as f32;
-        self.text.set_state(match used_perc {
-            0.0...0.3 => State::Idle,
-            0.3...0.6 => State::Info,
-            0.6...0.9 => State::Warning,
-            _ => State::Critical,
+        self.text.set_state(if used_perc < 0.3 {
+            State::Idle
+        } else if used_perc < 0.6 {
+            State::Info
+        } else if used_perc < 0.9 {
+            State::Warning
+        } else {
+            State::Critical
         });
 
         self.text.set_text(self.format.render_static_str(&values)?);

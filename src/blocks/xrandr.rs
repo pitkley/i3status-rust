@@ -203,12 +203,10 @@ impl Xrandr {
                 } else {
                     format_str = "{display}: {brightness} [{resolution}]";
                 }
+            } else if self.icons {
+                format_str = "{display} \u{f185} {brightness}";
             } else {
-                if self.icons {
-                    format_str = "{display} \u{f185} {brightness}";
-                } else {
-                    format_str = "{display}: {brightness}";
-                }
+                format_str = "{display}: {brightness}";
             }
 
             if let Ok(fmt_template) = FormatTemplate::from_string(String::from(format_str)) {

@@ -103,8 +103,7 @@ enum Unit {
 impl fmt::Display for Unit {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
-            Unit::MiB(n) => n.fmt(f),
-            Unit::KiB(n) => n.fmt(f),
+            Unit::MiB(n) | Unit::KiB(n) => n.fmt(f),
             Unit::GiB(n) => n.fmt(f),
         }
     }
@@ -684,7 +683,7 @@ impl Block for Memory {
         });
 
         if let Some(ref s) = event.name {
-            if self.clickable && event.button == MouseButton::Left && *s == "memory".to_string() {
+            if self.clickable && event.button == MouseButton::Left && *s == "memory" {
                 self.switch();
                 self.update()?;
                 self.tx_update_request.send(Task {

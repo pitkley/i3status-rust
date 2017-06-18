@@ -50,7 +50,7 @@ impl UpdateScheduler {
         for block in blocks.iter() {
             schedule.push(Task {
                 id: String::from(block.id()),
-                update_time: now.clone(),
+                update_time: now,
             });
         }
 

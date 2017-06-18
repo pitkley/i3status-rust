@@ -87,10 +87,10 @@ pub fn print_blocks(order: &Vec<String>, block_map: &HashMap<String, &mut Block>
 
     print!("[");
     for block_id in order {
-        let ref block = *(block_map.get(block_id).internal_error(
+        let block = block_map.get(block_id).internal_error(
             "util",
             "couldn't get block by id",
-        )?);
+        )?;
         let widgets = block.view();
         let first = widgets[0];
         let color = first.get_rendered()["background"].as_str().internal_error(

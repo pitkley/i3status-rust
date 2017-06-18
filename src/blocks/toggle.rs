@@ -89,17 +89,14 @@ impl Block for Toggle {
     fn click(&mut self, e: &I3BarEvent) -> Result<()> {
         if let Some(ref name) = e.name {
             if name.as_str() == self.id {
-                let cmd = match self.toggled {
-                    true => {
-                        self.toggled = false;
-                        self.text.set_icon("toggle_off");
-                        &self.command_off
-                    }
-                    false => {
-                        self.toggled = true;
-                        self.text.set_icon("toggle_on");
-                        &self.command_on
-                    }
+                let cmd = if self.toggled {
+                    self.toggled = false;
+                    self.text.set_icon("toggle_off");
+                    &self.command_off
+                } else {
+                    self.toggled = true;
+                    self.text.set_icon("toggle_on");
+                    &self.command_on
                 };
 
                 Command::new("sh").args(&["-c", cmd]).output().block_error(

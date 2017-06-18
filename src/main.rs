@@ -57,7 +57,7 @@ use util::deserialize_file;
 
 use self::clap::{Arg, ArgMatches, App};
 
-fn run(matches: ArgMatches) -> Result<()> {
+fn run(matches: &ArgMatches) -> Result<()> {
     let config: Config = deserialize_file(matches.value_of("config").unwrap())?;
 
     // Load all arguments
@@ -78,7 +78,7 @@ fn run(matches: ArgMatches) -> Result<()> {
             for &(ref block_name, ref block_config) in &config.blocks {
                 if block_name == matches.value_of("profile").unwrap() {
                     let mut block = create_block(
-                        &block_name,
+                        block_name,
                         block_config.clone(),
                         config.clone(),
                         tx.clone(),
@@ -89,7 +89,7 @@ fn run(matches: ArgMatches) -> Result<()> {
                             .unwrap()
                             .parse::<i32>()
                             .unwrap(),
-                        &block_name,
+                        block_name,
                         block.deref_mut(),
                     );
                     return Ok(());
@@ -231,7 +231,7 @@ fn main() {
     let exit_on_error = matches.is_present("exit-on-error");
 
     // Run and match for potential error
-    if let Err(error) = run(matches) {
+    if let Err(error) = run(&matches) {
         if exit_on_error {
             eprintln!("{:?}", error);
             ::std::process::exit(1);
@@ -255,7 +255,7 @@ fn main() {
 
 #[cfg(debug_assertions)]
 fn profile(iterations: i32, name: &str, block: &mut Block) {
-    let mut bar = progress::Bar::new();
+    let mut progress_bar = progress::Bar::new();
     println!(
         "Now profiling the {0} block by executing {1} updates.\n \
               Use pprof to analyze {0}.profile later.",
@@ -269,11 +269,11 @@ fn profile(iterations: i32, name: &str, block: &mut Block) {
         .start(format!("./{}.profile", name))
         .unwrap();
 
-    bar.set_job_title("Profiling...");
+    progress_bar.set_job_title("Profiling...");
 
     for i in 0..iterations {
         block.update().expect("block update failed");
-        bar.reach_percent(((i as f64 / iterations as f64) * 100.).round() as i32);
+        progress_bar.reach_percent(((i as f64 / iterations as f64) * 100.).round() as i32);
     }
 
     PROFILER.lock().unwrap().stop().unwrap();

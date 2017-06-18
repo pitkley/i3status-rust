@@ -103,8 +103,8 @@ impl Block for Cpu {
 
         self.utilization.set_state(match utilization {
             0...30 => State::Idle,
-            30...60 => State::Info,
-            60...90 => State::Warning,
+            31...60 => State::Info,
+            61...90 => State::Warning,
             _ => State::Critical,
         });
 
